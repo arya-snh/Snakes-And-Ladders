@@ -1,12 +1,16 @@
 package com.example.project;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
@@ -21,22 +25,32 @@ public class Controller {
     private Pane gameScreen;
     private Scene scene;
 
-    public void setScene(Scene scene) {
-        this.scene = scene;
-    }
-
     @FXML
     public void switchToGame(ActionEvent e) throws IOException {
 
         stage = (Stage)((Node)e.getSource()).getScene().getWindow();
 
-        Rectangle rec = new Rectangle(10,20,30,50);
-        Controller c = new Controller();
+
         StackPane gameScreen = new StackPane();
-        gameScreen.getChildren().add(rec);
+        setupGameScreen(gameScreen);
         Scene scene = new Scene(gameScreen, 450, 600);
-        c.setScene(scene);
         stage.setScene(scene);
         stage.show();
+    }
+
+    public void setupGameScreen(StackPane pane) throws IOException {
+
+        // Back button setup
+        Button backButton = new Button("<-");
+        backButton.setTranslateX(-180);
+        backButton.setTranslateY(-260);
+        pane.getChildren().add(backButton);
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("menu.fxml"));
+        Scene scene = new Scene(fxmlLoader.load());
+        backButton.setOnAction(e -> stage.setScene(scene));
+
+        // Board setup
+        //Image img = new Image("gameBoard.png");
+
     }
 }
