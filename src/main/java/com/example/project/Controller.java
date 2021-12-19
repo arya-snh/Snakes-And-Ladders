@@ -32,9 +32,9 @@ public class Controller {
 
         Rectangle rec = new Rectangle(10,20,30,50);
         Controller c = new Controller();
-        Pane gameScreen = new Pane();
+        StackPane gameScreen = new StackPane();
         gameScreen.getChildren().add(rec);
-        Scene scene = new Scene(gameScreen, 300, 400);
+        Scene scene = new Scene(gameScreen, 450, 600);
         c.setScene(scene);
         stage.setScene(scene);
         stage.show();
