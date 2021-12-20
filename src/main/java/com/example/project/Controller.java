@@ -23,8 +23,8 @@ public class Controller {
     private Stage stage;
     private Scene gameScene;
     private Parent root;
-    private int blueSqNumber = 0;
-    private int greenSqNumber = 0;
+    private static int blueSqNumber = 0;
+    private static int greenSqNumber = 1;
 
     @FXML
     private ImageView grid;
@@ -59,7 +59,8 @@ public class Controller {
     public void handleDiceClick(ActionEvent e) throws IOException{
         double originX = grid.getLayoutX() + grid.getFitHeight();
         double originY = grid.getLayoutY();
-        double yCoordinate = (grid.getFitHeight()/10.0)/2.0;
+        double box_height = grid.getFitHeight()/10.0;
+        double yCoordinate;
         int randInt = (int) Math.floor(6 * Math.random() +1);
         //file:/C:/Users/tarun/IdeaProjects/ap-project/src/die-3.png
         String die = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/"+"die-" + randInt+ ".png";
@@ -70,8 +71,9 @@ public class Controller {
         if (isRightTurn) {
             //green's turn
             greenSqNumber += randInt;
-            yCoordinate -= Math.floor((greenSqNumber-1)/10)*(grid.getFitHeight()/10.0);
-            greenPlayer.setY(yCoordinate);
+            System.out.println("Green is at " + greenSqNumber +"\n");
+            yCoordinate = Math.floor((greenSqNumber-1)/10)*box_height;
+            greenPlayer.setTranslateY(-yCoordinate);
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/left-turn.png";
             isRightTurn = false;
         }
