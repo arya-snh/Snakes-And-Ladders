@@ -1,5 +1,6 @@
 package com.example.project;
-
+import java.io.*;
+import java.lang.Thread;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -57,10 +58,10 @@ public class Controller {
 
 
     public void handleDiceClick(ActionEvent e) throws IOException{
-        double originX = grid.getLayoutX() ;
-        double originY = grid.getLayoutY() + grid.getFitHeight();
-        double box_height = grid.getFitHeight()/10.0;
-        double box_width = grid.getFitWidth()/10.0;
+        double originX = 23;
+        double originY = 45;
+        double box_height =(grid.getFitHeight()/10.0) - 1;
+        double box_width = (grid.getFitWidth()/10.0) - 1 ;
         double greenY=0, greenX=0, blueY, blueX;
 
         int randInt = (int) Math.floor(6 * Math.random() +1);
@@ -73,11 +74,25 @@ public class Controller {
         if (isRightTurn) {
             //green's turn
             greenSqNumber += randInt;
-            greenY = Math.floor((greenSqNumber-1)/10)*box_height;
 
-            System.out.println("Green is at " + greenSqNumber +"\n");
-            greenPlayer.setTranslateY(-greenY);
-            greenPlayer.setTranslateX(greenX);
+            int yRowIndex = 9 - (int) Math.floor((greenSqNumber-1)/10);
+            greenY = originY + yRowIndex * box_height;
+            int xRowIndex = (greenSqNumber - 1) % 10;
+
+            if (yRowIndex % 2 != 0) {
+                greenX = originX + xRowIndex * box_width;
+            } else {
+                greenX = originX +  grid.getFitWidth() -  xRowIndex * box_width - 45;
+
+            }
+
+            greenPlayer.setLayoutX(greenX + 10);
+            greenPlayer.setLayoutY(greenY + 20);
+
+            System.out.println("Player is at " + greenSqNumber);
+
+
+
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/left-turn.png";
             isRightTurn = false;
         }
