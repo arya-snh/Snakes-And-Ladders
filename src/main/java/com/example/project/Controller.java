@@ -1,42 +1,42 @@
 package com.example.project;
-import java.io.*;
-import java.lang.Thread;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Controller {
-    private boolean isRightTurn = true;
+    private boolean isGreensTurn = true;
     private Stage stage;
     private Scene gameScene;
     private Parent root;
-    private static int blueSqNumber = 0;
-    private static int greenSqNumber = 1;
 
     @FXML
     private ImageView grid;
 
     @FXML
-    private ImageView greenPlayer;
+    private ImageView greenPlayerImage;
+    @FXML
+    private ImageView bluePlayerImage;
 
     @FXML
     private ImageView playerBar;
     @FXML
     private ImageView diceImg;
+
+    private Dice dice = new Dice(3);
+    private Player greenPlayer = new Player("Green");
+    private Player bluePlayer = new Player("Blue");
+    private Board gameBoard = new Board();
+
+
+
 
     public void switchtoMenu(ActionEvent e) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
@@ -52,63 +52,119 @@ public class Controller {
         gameScene = new Scene(root);
         stage.setScene(gameScene);
         stage.show();
-        //boxes.add(r0);
     }
 
 
 
     public void handleDiceClick(ActionEvent e) throws IOException{
-        double originX = 23;
-        double originY = 45;
-        double box_height =(grid.getFitHeight()/10.0) - 1;
-        double box_width = (grid.getFitWidth()/10.0) - 1 ;
-        double greenY=0, greenX=0, blueY, blueX;
-
-        int randInt = (int) Math.floor(6 * Math.random() +1);
-        //file:/C:/Users/tarun/IdeaProjects/ap-project/src/die-3.png
-        String die = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/" + "die-" + randInt + ".png";
-        Image die_img = new Image(die);
-        diceImg.setImage(die_img);
+        int offset = 0;
+        int randInt = dice.roll();
+        dice.render(diceImg);
+        this.addLadderstoBoard();
+        this.addSnakesToBoard();
 
         String player_bar_path;
-        if (isRightTurn) {
-            //green's turn
-            greenSqNumber += randInt;
+        if (isGreensTurn) {
+            greenPlayer.update(randInt);
+            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
 
-            int yRowIndex = 9 - (int) Math.floor((greenSqNumber-1)/10);
-            greenY = originY + yRowIndex * box_height;
-            int xRowIndex = (greenSqNumber - 1) % 10;
+            greenPlayer.render(greenPlayerImage, offset);
 
-            if (yRowIndex % 2 != 0) {
-                greenX = originX + xRowIndex * box_width;
-            } else {
-                greenX = originX +  grid.getFitWidth() -  xRowIndex * box_width - 45;
-
-            }
-
-            greenPlayer.setLayoutX(greenX + 10);
-            greenPlayer.setLayoutY(greenY + 20);
-
-            System.out.println("Player is at " + greenSqNumber);
-
-
-
+            System.out.println("Green player is at " + greenPlayer.getCurrentTile());
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/left-turn.png";
-            isRightTurn = false;
+            isGreensTurn = false;
+
+            if (gameBoard.getTile(greenPlayer.getCurrentTile()).isLadderBottom()) {
+                for (Ladder l : gameBoard.getLadders()) {
+                    if (l.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
+                        greenPlayer.update(l.getEnd().getTileNum() - l.getStart().getTileNum());
+                        if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                        greenPlayer.render(greenPlayerImage, offset);
+                        break;
+
+                    }
+                }
+            }
+            if (gameBoard.getTile(greenPlayer.getCurrentTile()).isSnakeHead()) {
+                for (Snake s: gameBoard.getSnakes()) {
+                    if (s.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
+                        greenPlayer.update((s.getEnd().getTileNum() - s.getStart().getTileNum()));
+                        if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                        greenPlayer.render(greenPlayerImage, offset);
+                        break;
+                    }
+                }
+            }
         }
         else {
-            //blue's turn
-//            blueSqNumber += randInt;
-//            System.out.println("Blue is at " + blueSqNumber +"\n");
-//            blueY = Math.floor((blueSqNumber-1)/10)*box_height;
-//            bluePlayer.setTranslateY(-blueY);
+            bluePlayer.update((randInt));
+            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = -9;
+
+            bluePlayer.render(bluePlayerImage, offset);
+
+            System.out.println("Blue player is at " + bluePlayer.getCurrentTile());
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/right-turn.png";
-            isRightTurn = true;
+            isGreensTurn = true;
+
+            if (gameBoard.getTile(bluePlayer.getCurrentTile()).isLadderBottom()) {
+                for (Ladder l : gameBoard.getLadders()) {
+                    if (l.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
+                        bluePlayer.update(l.getEnd().getTileNum() - l.getStart().getTileNum());
+                        if (bluePlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                        bluePlayer.render(bluePlayerImage, offset);
+                        break;
+
+                    }
+                }
+            }
+            if (gameBoard.getTile(bluePlayer.getCurrentTile()).isSnakeHead()) {
+                for (Snake s: gameBoard.getSnakes()) {
+                    if (s.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
+                        bluePlayer.update((s.getEnd().getTileNum() - s.getStart().getTileNum()));
+                        if (bluePlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                        bluePlayer.render(bluePlayerImage, offset);
+                        break;
+                    }
+                }
+            }
+
         }
         Image bar_img = new Image(player_bar_path);
         playerBar.setImage(bar_img);
 
+    }
 
 
+
+
+    public void addSnakesToBoard() {
+        gameBoard.addSnake(new Snake(gameBoard.getTile(98), gameBoard.getTile(82)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(94), gameBoard.getTile(47)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(92), gameBoard.getTile(71)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(85), gameBoard.getTile(65)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(79), gameBoard.getTile(43)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(68), gameBoard.getTile(50)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(44), gameBoard.getTile(53)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(33), gameBoard.getTile(8)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(15), gameBoard.getTile(5)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(22), gameBoard.getTile(2)));
+    }
+
+    public void addLadderstoBoard() {
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(3)), gameBoard.getTile(24)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(7)), gameBoard.getTile(34)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(12)), gameBoard.getTile(31)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(20)), gameBoard.getTile(41)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(36)), gameBoard.getTile(46)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(56)), gameBoard.getTile(63)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(60)), gameBoard.getTile(81)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(69)), gameBoard.getTile(93)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(75)), gameBoard.getTile(95)));
+        gameBoard.addLadder(new Ladder((gameBoard.getTile(78)), gameBoard.getTile(97)));
+    }
+
+    public void resetGame() {
+        greenPlayer.setCurrentTile(0);
+        bluePlayer.setCurrentTile(0);
     }
 }
