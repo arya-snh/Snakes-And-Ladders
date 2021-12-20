@@ -5,9 +5,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="739.0" prefWidth="428.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.project.Controller">
+<AnchorPane prefHeight="740.0" prefWidth="430.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.project.Controller">
    <children>
-      <ImageView fitHeight="605.0" fitWidth="428.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="580.0" fitWidth="430.0" layoutY="101.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:/C:/Users/tarun/IdeaProjects/ap-project/src/bg.jpg" />
          </image>
