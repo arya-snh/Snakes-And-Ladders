@@ -1,4 +1,6 @@
 package com.example.project;
+import javafx.animation.AnimationTimer;
+import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 
@@ -16,6 +19,8 @@ public class Controller {
     private Stage stage;
     private Scene gameScene;
     private Parent root;
+    private double time = 1;
+    String player_bar_path;
 
     @FXML
     private ImageView grid;
@@ -29,6 +34,8 @@ public class Controller {
     private ImageView playerBar;
     @FXML
     private ImageView diceImg;
+    @FXML
+    private ImageView roll;
 
     private Dice dice = new Dice(3);
     private Player greenPlayer = new Player("Green");
@@ -54,22 +61,20 @@ public class Controller {
         stage.show();
     }
 
-
-
     public void handleDiceClick(ActionEvent e) throws IOException{
+        TranslateTransition move = new TranslateTransition();
         int offset = 0;
         int randInt = dice.roll();
-        dice.render(diceImg);
+        dice.render(diceImg, roll);
         this.addLadderstoBoard();
         this.addSnakesToBoard();
 
-        String player_bar_path;
+
         if (isGreensTurn) {
-            for (int it=0; it<randInt; it++) {
-                greenPlayer.update(1);
-                if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                greenPlayer.render(greenPlayerImage, offset);
-            }
+
+            greenPlayer.update(randInt);
+            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+            greenPlayer.render(greenPlayerImage, move, offset);
 
             System.out.println("Green player is at " + greenPlayer.getCurrentTile());
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/left-turn.png";
@@ -80,7 +85,7 @@ public class Controller {
                     if (l.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
                         greenPlayer.update(l.getEnd().getTileNum() - l.getStart().getTileNum());
                         if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        greenPlayer.render(greenPlayerImage, offset);
+                        greenPlayer.render(greenPlayerImage, move, offset);
                         break;
 
                     }
@@ -91,18 +96,17 @@ public class Controller {
                     if (s.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
                         greenPlayer.update((s.getEnd().getTileNum() - s.getStart().getTileNum()));
                         if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        greenPlayer.render(greenPlayerImage, offset);
+                        greenPlayer.render(greenPlayerImage, move, offset);
                         break;
                     }
                 }
             }
         }
         else {
-            for (int it=0; it<randInt; it++) {
-                greenPlayer.update(1);
-                if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                greenPlayer.render(greenPlayerImage, offset);
-            }
+
+            bluePlayer.update(randInt);
+            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+            bluePlayer.render(bluePlayerImage, move, offset);
 
             System.out.println("Blue player is at " + bluePlayer.getCurrentTile());
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/right-turn.png";
@@ -113,7 +117,7 @@ public class Controller {
                     if (l.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
                         bluePlayer.update(l.getEnd().getTileNum() - l.getStart().getTileNum());
                         if (bluePlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        bluePlayer.render(bluePlayerImage, offset);
+                        bluePlayer.render(bluePlayerImage, move, offset);
                         break;
 
                     }
@@ -124,20 +128,16 @@ public class Controller {
                     if (s.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
                         bluePlayer.update((s.getEnd().getTileNum() - s.getStart().getTileNum()));
                         if (bluePlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        bluePlayer.render(bluePlayerImage, offset);
+                        bluePlayer.render(bluePlayerImage, move, offset);
                         break;
                     }
                 }
             }
 
         }
-        Image bar_img = new Image(player_bar_path);
-        playerBar.setImage(bar_img);
-
+        AnimationTimer timer = new Mytimer();
+        timer.start();
     }
-
-
-
 
     public void addSnakesToBoard() {
         gameBoard.addSnake(new Snake(gameBoard.getTile(98), gameBoard.getTile(82)));
@@ -168,5 +168,22 @@ public class Controller {
     public void resetGame() {
         greenPlayer.setCurrentTile(0);
         bluePlayer.setCurrentTile(0);
+    }
+
+    private class Mytimer extends AnimationTimer {
+        @Override
+        public void handle(long a) {
+            fade();
+        }
+
+        private void fade() {
+            time-=0.005;
+            if (time <= 0) {
+                time = 1;
+                Image bar_img = new Image(player_bar_path);
+                playerBar.setImage(bar_img);
+                stop();
+            }
+        }
     }
 }

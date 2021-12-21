@@ -1,6 +1,7 @@
 package com.example.project;
-
+import javafx.animation.TranslateTransition;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
 
 public class Player extends GameObject {
     private double originX = 23;
@@ -10,17 +11,23 @@ public class Player extends GameObject {
 
     private String color;
     private int currentTile = 0;
+    private double delX = 0;
+    private double delY = 0;
     private double X;
     private double Y;
+    private double prevX = 30;
+    private double prevY = 591;
     private boolean isActive = false;
 
     Player(String color) {
         super();
         this.color = color;
-
     }
 
     public void update(int inc) {
+        this.prevX = this.X;
+        this.prevY = this.Y;
+
         if (inc == 1) isActive = true;
 
         if (!isActive) inc = 0;
@@ -37,15 +44,23 @@ public class Player extends GameObject {
         } else {
             this.X = originX +  386 -  xRowIndex * box_width - 45;
         }
+        this.delX = this.X - prevX;
+        this.delY = this.Y - prevY;
     }
 
 
-    public void render(ImageView iV, int offset) {
+    public void render(ImageView iV, TranslateTransition move ,int offset) {
         if (isActive) {
+            move.setNode(iV);
+            move.setDuration(Duration.seconds(1));
+            move.setToX(this.X + 10 + offset * 0.7);
+            move.setToY(this.Y + 20 + offset);
+            move.play();
+
             iV.setLayoutY(this.Y + 20 + offset);
             iV.setLayoutX(this.X + 10 + offset * 0.7);
+            move.stop();
         }
-
     }
 
     public String getColor() {
@@ -53,7 +68,6 @@ public class Player extends GameObject {
     }
 
     public void setColor(String color) {
-
         this.color = color;
     }
 
@@ -80,4 +94,10 @@ public class Player extends GameObject {
     public void setY(double y) {
         Y = y;
     }
+
+    public boolean getIsActive() {
+        return isActive;
+    }
+
+
 }
