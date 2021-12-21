@@ -53,6 +53,7 @@ public class Player extends GameObject {
     }
 
     public void setColor(String color) {
+
         this.color = color;
     }
 

@@ -65,10 +65,11 @@ public class Controller {
 
         String player_bar_path;
         if (isGreensTurn) {
-            greenPlayer.update(randInt);
-            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-
-            greenPlayer.render(greenPlayerImage, offset);
+            for (int it=0; it<randInt; it++) {
+                greenPlayer.update(1);
+                if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                greenPlayer.render(greenPlayerImage, offset);
+            }
 
             System.out.println("Green player is at " + greenPlayer.getCurrentTile());
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/left-turn.png";
@@ -97,10 +98,11 @@ public class Controller {
             }
         }
         else {
-            bluePlayer.update((randInt));
-            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = -9;
-
-            bluePlayer.render(bluePlayerImage, offset);
+            for (int it=0; it<randInt; it++) {
+                greenPlayer.update(1);
+                if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                greenPlayer.render(greenPlayerImage, offset);
+            }
 
             System.out.println("Blue player is at " + bluePlayer.getCurrentTile());
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/right-turn.png";
