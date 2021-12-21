@@ -36,6 +36,8 @@ public class Controller {
     private ImageView diceImg;
     @FXML
     private ImageView roll;
+    @FXML
+    private ImageView arrow;
 
     private Dice dice = new Dice(3);
     private Player greenPlayer = new Player("Green");
@@ -62,6 +64,7 @@ public class Controller {
     }
 
     public void handleDiceClick(ActionEvent e) throws IOException{
+        arrow.setOpacity(0);
         TranslateTransition move = new TranslateTransition();
         int offset = 0;
         int randInt = dice.roll();
@@ -180,10 +183,12 @@ public class Controller {
             time-=0.005;
             if (time <= 0) {
                 time = 1;
+                arrow.setOpacity((1));
                 Image bar_img = new Image(player_bar_path);
                 playerBar.setImage(bar_img);
                 stop();
             }
         }
     }
+
 }

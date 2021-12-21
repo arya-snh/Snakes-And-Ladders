@@ -51,15 +51,8 @@ public class Player extends GameObject {
 
     public void render(ImageView iV, TranslateTransition move ,int offset) {
         if (isActive) {
-            move.setNode(iV);
-            move.setDuration(Duration.seconds(1));
-            move.setToX(this.X + 10 + offset * 0.7);
-            move.setToY(this.Y + 20 + offset);
-            move.play();
-
             iV.setLayoutY(this.Y + 20 + offset);
             iV.setLayoutX(this.X + 10 + offset * 0.7);
-            move.stop();
         }
     }
 

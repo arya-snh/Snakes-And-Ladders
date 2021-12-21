@@ -23,22 +23,22 @@
          </image>
       </ImageView>
       <Button layoutX="10.0" layoutY="5.0" mnemonicParsing="false" onAction="#switchtoMenu" opacity="0.0" prefHeight="34.0" prefWidth="30.0" text="back" />
-      <ImageView fx:id="playerBar" fitHeight="61.0" fitWidth="246.0" layoutX="95.0" layoutY="657.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="playerBar" fitHeight="61.0" fitWidth="246.0" layoutX="97.0" layoutY="642.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:/C:/Users/tarun/IdeaProjects/ap-project/src/right-turn.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="diceImg" fitHeight="61.0" fitWidth="236.0" layoutX="95.0" layoutY="657.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="diceImg" fitHeight="61.0" fitWidth="236.0" layoutX="97.0" layoutY="642.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:/C:/Users/tarun/IdeaProjects/ap-project/src/die-3.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="roll" fitHeight="115.0" fitWidth="151.0" layoutX="137.0" layoutY="625.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="roll" fitHeight="151.0" fitWidth="181.0" layoutX="124.0" layoutY="602.0" opacity="0.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:/C:/Users/tarun/IdeaProjects/ap-project/src/roll.gif" />
          </image>
       </ImageView>
-      <Button layoutX="198.0" layoutY="670.0" mnemonicParsing="false" onAction="#handleDiceClick" opacity="0.0" prefHeight="26.0" prefWidth="30.0" text="dice" />
+      <Button layoutX="202.0" layoutY="660.0" mnemonicParsing="false" onAction="#handleDiceClick" opacity="0.0" prefHeight="26.0" prefWidth="30.0" text="dice" />
       <ImageView fx:id="greenPlayerImage" fitHeight="34.0" fitWidth="19.0" layoutX="18.0" layoutY="591.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:/C:/Users/tarun/IdeaProjects/ap-project/src/token-green.png" />
@@ -47,6 +47,11 @@
       <ImageView fx:id="bluePlayerImage" fitHeight="43.0" fitWidth="19.0" layoutX="43.0" layoutY="591.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="file:/C:/Users/tarun/IdeaProjects/ap-project/src/token-blue.png" />
+         </image>
+      </ImageView>
+      <ImageView fx:id="arrow" fitHeight="26.0" fitWidth="46.0" layoutX="192.0" layoutY="621.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="file:/C:/Users/tarun/IdeaProjects/ap-project/src/arrow.gif" />
          </image>
       </ImageView>
    </children>
