@@ -23,8 +23,6 @@ public class Dice extends GameObject{
         return cf;
     }
 
-
-
     public void render(ImageView dice, ImageView roll) {
         this.roll = roll;
         AnimationTimer timer = new Mytimer();

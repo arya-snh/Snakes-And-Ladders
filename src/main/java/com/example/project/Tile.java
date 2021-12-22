@@ -1,6 +1,6 @@
 package com.example.project;
 
-public class Tile {
+public class Tile extends GameObject{
     private int tileNum;
     private boolean isSnakeHead = false;
     private boolean isSnakeTail= false;
@@ -15,10 +15,6 @@ public class Tile {
         return tileNum;
     }
 
-    public void setTileNum(int tileNum) {
-        this.tileNum = tileNum;
-    }
-
     public boolean isSnakeHead() {
         return isSnakeHead;
     }
@@ -27,16 +23,8 @@ public class Tile {
         isSnakeHead = snakeHead;
     }
 
-    public boolean isSnakeTail() {
-        return isSnakeTail;
-    }
-
     public void setSnakeTail(boolean snakeTail) {
         isSnakeTail = snakeTail;
-    }
-
-    public boolean isLadderTop() {
-        return isLadderTop;
     }
 
     public void setLadderTop(boolean ladderTop) {

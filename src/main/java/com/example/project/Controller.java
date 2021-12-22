@@ -31,7 +31,6 @@ public class Controller {
     private int randInt;
     private SequentialTransition sq = new SequentialTransition();
     boolean isStart = true;
-    private SavedGame saved = new SavedGame(0,0,true);
     private int blueWinCounter = 0, greenWinCounter = 0;
 
     @FXML

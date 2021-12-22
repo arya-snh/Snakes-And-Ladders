@@ -1,6 +1,6 @@
 package com.example.project;
 
-public class Tunnel {
+public class Tunnel extends GameObject{
     protected Tile start;
     protected Tile end;
 
@@ -13,15 +13,7 @@ public class Tunnel {
         return start;
     }
 
-    public void setStart(Tile start) {
-        this.start = start;
-    }
-
     public Tile getEnd() {
         return end;
-    }
-
-    public void setEnd(Tile end) {
-        this.end = end;
     }
 }

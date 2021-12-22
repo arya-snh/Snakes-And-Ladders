@@ -7,4 +7,8 @@ public class GameObject {
     GameObject() {
         this.id = idCounter++;
     }
+
+    public long getId() {
+        return id;
+    }
 }

@@ -123,41 +123,8 @@ public class Player extends GameObject {
         }
     }
 
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
     public int getCurrentTile() {
         return currentTile;
     }
-
-    public void setCurrentTile(int currentTile) {
-        this.currentTile = currentTile;
-    }
-
-    public double getX() {
-        return X;
-    }
-
-    public void setX(double x) {
-        X = x;
-    }
-
-    public double getY() {
-        return Y;
-    }
-
-    public void setY(double y) {
-        Y = y;
-    }
-
-    public boolean getIsActive() {
-        return isActive;
-    }
-
 
 }
