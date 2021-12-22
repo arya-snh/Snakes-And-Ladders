@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -31,6 +32,7 @@ public class Controller {
     private SequentialTransition sq = new SequentialTransition();
     boolean isStart = true;
     private SavedGame saved = new SavedGame(0,0,true);
+    private int blueWinCounter = 0, greenWinCounter = 0;
 
     @FXML
     private Button menu;
@@ -59,14 +61,15 @@ public class Controller {
     private ImageView roll;
     @FXML
     private ImageView arrow;
+    @FXML
+    private Label greenWinText;
+    @FXML
+    private Label blueWinText;
 
     private Dice diceObj = new Dice(3);
     private Player greenPlayer = new Player("Green", 18 ,591);
     private Player bluePlayer = new Player("Blue", 43, 591);
     private Board gameBoard = new Board();
-
-
-
 
     public void switchtoMenu(ActionEvent e) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("menu.fxml"));
@@ -98,8 +101,6 @@ public class Controller {
             isGreensTurn = false;
             AnimationTimer timer = new TimerforGreenPlayer();
             timer.start();
-
-            if (greenPlayer.getCurrentTile() == 100) endGame(greenPlayer);
         }
 
         else {
@@ -107,19 +108,20 @@ public class Controller {
             timer.start();
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/right-turn.png";
             isGreensTurn = true;
-
-            if(bluePlayer.getCurrentTile() ==100) endGame(bluePlayer);
         }
 
         AnimationTimer timer = new Mytimer();
         timer.start();
     }
 
-    public void endGame(Player winner) {
-        System.out.println("ppppp");
+    public void endGame() {
         winnerDialog.setOpacity(1);
         menu.toFront();
         replay.toFront();
+        greenWinText.setText(("" + greenWinCounter));
+        greenWinText.toFront();
+        blueWinText.setText(("" + blueWinCounter));
+        blueWinText.toFront();
         back.setDisable(true);
         dice.setDisable(true);
 
@@ -158,8 +160,18 @@ public class Controller {
         winnerDialog.setOpacity(0);
         menu.toBack();
         replay.toBack();
-        greenPlayer.setCurrentTile(0);
-        bluePlayer.setCurrentTile(0);
+        greenWinText.toBack();
+        blueWinText.toBack();
+        greenPlayer = new Player("Green", 18 ,591);
+        bluePlayer = new Player("Blue", 43, 591);
+        greenPlayerImage.setLayoutX(18);
+        greenPlayerImage.setLayoutY(591);
+        greenPlayerImage.setTranslateY(0);
+        greenPlayerImage.setTranslateX(0);
+        bluePlayerImage.setLayoutX(43);
+        bluePlayerImage.setLayoutY(591);
+        bluePlayerImage.setTranslateX(0);
+        bluePlayerImage.setTranslateY(0);
     }
 
     private class Mytimer extends AnimationTimer {
@@ -220,6 +232,10 @@ public class Controller {
                 }
                 sq.play();
                 System.out.println("Green : " + greenPlayer.getCurrentTile());
+                if (greenPlayer.getCurrentTile() == 100) {
+                    greenWinCounter++;
+                    endGame();
+                }
                 stop();
             }
         }
@@ -269,13 +285,17 @@ public class Controller {
 
                 sq.play();
                 System.out.println("Blue : " + bluePlayer.getCurrentTile());
+                if(bluePlayer.getCurrentTile() ==100) {
+                    blueWinCounter++;
+                    endGame();
+                }
                 stop();
             }
         }
     }
 
-    public void handleBoardMouseEntered() {
-        if (isStart) resetGame();
+    public void exitGame() {
+        System.exit(0);
     }
 
 }

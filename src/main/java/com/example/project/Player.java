@@ -12,10 +12,10 @@ public class Player extends GameObject {
     private double box_width = (386/10.0) - 1;
 
     private String color;
-    private int currentTile = 90;
+    private int currentTile = 0;
     private double X;
     private double Y;
-    private boolean isActive = true;
+    private boolean isActive = false;
 
     Player(String color, int x, int y) {
         super();
