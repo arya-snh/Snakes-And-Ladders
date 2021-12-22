@@ -1,18 +1,24 @@
 package com.example.project;
 import javafx.animation.AnimationTimer;
+import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.IOException;
+import java.util.Timer;
 
 public class Controller {
     private boolean isGreensTurn = true;
@@ -21,7 +27,22 @@ public class Controller {
     private Parent root;
     private double time = 1;
     String player_bar_path;
+    private int randInt;
+    private SequentialTransition sq = new SequentialTransition();
+    boolean isStart = true;
+    private SavedGame saved = new SavedGame(0,0,true);
 
+    @FXML
+    private Button menu;
+    @FXML
+    private Button replay;
+    @FXML
+    private Button dice;
+    @FXML
+    private Button back;
+
+    @FXML
+    private ImageView winnerDialog;
     @FXML
     private ImageView grid;
 
@@ -39,9 +60,9 @@ public class Controller {
     @FXML
     private ImageView arrow;
 
-    private Dice dice = new Dice(3);
-    private Player greenPlayer = new Player("Green");
-    private Player bluePlayer = new Player("Blue");
+    private Dice diceObj = new Dice(3);
+    private Player greenPlayer = new Player("Green", 18 ,591);
+    private Player bluePlayer = new Player("Blue", 43, 591);
     private Board gameBoard = new Board();
 
 
@@ -64,82 +85,44 @@ public class Controller {
     }
 
     public void handleDiceClick(ActionEvent e) throws IOException{
+        isStart = false;
+        sq.getChildren().clear();
         arrow.setOpacity(0);
-        TranslateTransition move = new TranslateTransition();
-        int offset = 0;
-        int randInt = dice.roll();
-        dice.render(diceImg, roll);
+        randInt = diceObj.roll();
+        diceObj.render(diceImg, roll);
         this.addLadderstoBoard();
         this.addSnakesToBoard();
 
-
         if (isGreensTurn) {
-
-            greenPlayer.update(randInt);
-            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-            greenPlayer.render(greenPlayerImage, move, offset);
-
-            System.out.println("Green player is at " + greenPlayer.getCurrentTile());
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/left-turn.png";
             isGreensTurn = false;
+            AnimationTimer timer = new TimerforGreenPlayer();
+            timer.start();
 
-            if (gameBoard.getTile(greenPlayer.getCurrentTile()).isLadderBottom()) {
-                for (Ladder l : gameBoard.getLadders()) {
-                    if (l.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
-                        greenPlayer.update(l.getEnd().getTileNum() - l.getStart().getTileNum());
-                        if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        greenPlayer.render(greenPlayerImage, move, offset);
-                        break;
-
-                    }
-                }
-            }
-            if (gameBoard.getTile(greenPlayer.getCurrentTile()).isSnakeHead()) {
-                for (Snake s: gameBoard.getSnakes()) {
-                    if (s.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
-                        greenPlayer.update((s.getEnd().getTileNum() - s.getStart().getTileNum()));
-                        if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        greenPlayer.render(greenPlayerImage, move, offset);
-                        break;
-                    }
-                }
-            }
+            if (greenPlayer.getCurrentTile() == 100) endGame(greenPlayer);
         }
+
         else {
-
-            bluePlayer.update(randInt);
-            if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-            bluePlayer.render(bluePlayerImage, move, offset);
-
-            System.out.println("Blue player is at " + bluePlayer.getCurrentTile());
+            AnimationTimer timer = new TimerforBluePlayer();
+            timer.start();
             player_bar_path = "file:/C:/Users/tarun/IdeaProjects/ap-project/src/right-turn.png";
             isGreensTurn = true;
 
-            if (gameBoard.getTile(bluePlayer.getCurrentTile()).isLadderBottom()) {
-                for (Ladder l : gameBoard.getLadders()) {
-                    if (l.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
-                        bluePlayer.update(l.getEnd().getTileNum() - l.getStart().getTileNum());
-                        if (bluePlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        bluePlayer.render(bluePlayerImage, move, offset);
-                        break;
-
-                    }
-                }
-            }
-            if (gameBoard.getTile(bluePlayer.getCurrentTile()).isSnakeHead()) {
-                for (Snake s: gameBoard.getSnakes()) {
-                    if (s.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
-                        bluePlayer.update((s.getEnd().getTileNum() - s.getStart().getTileNum()));
-                        if (bluePlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
-                        bluePlayer.render(bluePlayerImage, move, offset);
-                        break;
-                    }
-                }
-            }
-
+            if(bluePlayer.getCurrentTile() ==100) endGame(bluePlayer);
         }
+
         AnimationTimer timer = new Mytimer();
         timer.start();
+    }
+
+    public void endGame(Player winner) {
+        System.out.println("ppppp");
+        winnerDialog.setOpacity(1);
+        menu.toFront();
+        replay.toFront();
+        back.setDisable(true);
+        dice.setDisable(true);
+
     }
 
     public void addSnakesToBoard() {
@@ -149,7 +132,7 @@ public class Controller {
         gameBoard.addSnake(new Snake(gameBoard.getTile(85), gameBoard.getTile(65)));
         gameBoard.addSnake(new Snake(gameBoard.getTile(79), gameBoard.getTile(43)));
         gameBoard.addSnake(new Snake(gameBoard.getTile(68), gameBoard.getTile(50)));
-        gameBoard.addSnake(new Snake(gameBoard.getTile(44), gameBoard.getTile(53)));
+        gameBoard.addSnake(new Snake(gameBoard.getTile(44), gameBoard.getTile(23)));
         gameBoard.addSnake(new Snake(gameBoard.getTile(33), gameBoard.getTile(8)));
         gameBoard.addSnake(new Snake(gameBoard.getTile(15), gameBoard.getTile(5)));
         gameBoard.addSnake(new Snake(gameBoard.getTile(22), gameBoard.getTile(2)));
@@ -169,6 +152,12 @@ public class Controller {
     }
 
     public void resetGame() {
+        isStart = true;
+        back.setDisable(false);
+        dice.setDisable(false);
+        winnerDialog.setOpacity(0);
+        menu.toBack();
+        replay.toBack();
         greenPlayer.setCurrentTile(0);
         bluePlayer.setCurrentTile(0);
     }
@@ -180,7 +169,7 @@ public class Controller {
         }
 
         private void fade() {
-            time-=0.005;
+            time-=0.007;
             if (time <= 0) {
                 time = 1;
                 arrow.setOpacity((1));
@@ -189,6 +178,104 @@ public class Controller {
                 stop();
             }
         }
+    }
+
+    private class TimerforGreenPlayer extends AnimationTimer {
+        @Override
+        public void handle(long a) {
+            fade();
+        }
+
+        private void fade() {
+            time-=0.009;
+            if (time <= 0) {
+                time = 1;
+                sq.getChildren().clear();
+                sq.setNode(greenPlayerImage);
+
+                greenPlayer.update(randInt, sq, greenPlayerImage);
+                sq.setOnFinished(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        int offset = 0;
+                        if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                        greenPlayer.render(greenPlayerImage, offset);
+                    }
+                });
+                if (gameBoard.getTile(greenPlayer.getCurrentTile()).isLadderBottom()) {
+                    for (Ladder l : gameBoard.getLadders()) {
+                        if (l.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
+                            greenPlayer.updateLadder(sq, l);
+                            break;
+                        }
+                    }
+                }
+                if (gameBoard.getTile(greenPlayer.getCurrentTile()).isSnakeHead()) {
+                    for (Snake s: gameBoard.getSnakes()) {
+                        if (s.getStart().getTileNum() == greenPlayer.getCurrentTile()) {
+                            greenPlayer.updateSnake(sq, s);
+                            break;
+                        }
+                    }
+                }
+                sq.play();
+                System.out.println("Green : " + greenPlayer.getCurrentTile());
+                stop();
+            }
+        }
+    }
+
+    private class TimerforBluePlayer extends AnimationTimer {
+        @Override
+        public void handle(long a) {
+            fade();
+        }
+
+        private void fade() {
+            time-=0.009;
+            if (time <= 0) {
+                time = 1;
+                sq.getChildren().clear();
+
+                sq.setNode(bluePlayerImage);
+                bluePlayer.update(randInt, sq, bluePlayerImage);
+                sq.setOnFinished(new EventHandler<ActionEvent>() {
+                    @Override
+                    public void handle(ActionEvent actionEvent) {
+                        int offset = 0;
+                        if (greenPlayer.getCurrentTile() == bluePlayer.getCurrentTile()) offset = 7;
+                        bluePlayer.render(bluePlayerImage, offset);
+                    }
+                });
+
+                if (gameBoard.getTile(bluePlayer.getCurrentTile()).isLadderBottom()) {
+                    for (Ladder l : gameBoard.getLadders()) {
+                        if (l.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
+                            bluePlayer.updateLadder(sq, l);
+                            break;
+
+                        }
+                    }
+                }
+                if (gameBoard.getTile(bluePlayer.getCurrentTile()).isSnakeHead()) {
+                    for (Snake s: gameBoard.getSnakes()) {
+                        if (s.getStart().getTileNum() == bluePlayer.getCurrentTile()) {
+                            bluePlayer.updateSnake(sq, s);
+
+                            break;
+                        }
+                    }
+                }
+
+                sq.play();
+                System.out.println("Blue : " + bluePlayer.getCurrentTile());
+                stop();
+            }
+        }
+    }
+
+    public void handleBoardMouseEntered() {
+        if (isStart) resetGame();
     }
 
 }
