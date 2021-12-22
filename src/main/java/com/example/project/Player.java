@@ -49,7 +49,7 @@ public class Player extends GameObject {
 
             TranslateTransition tra = new TranslateTransition();
             tra.setNode(img);
-            tra.setDuration(Duration.seconds(0.6));
+            tra.setDuration(Duration.seconds(0.3));
             tra.setByX(this.X- prevX);
             tra.setByY(this.Y- prevY);
             sq.getChildren().add(tra);
